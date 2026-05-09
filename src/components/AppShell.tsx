@@ -11,6 +11,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     const stored = sessionStorage.getItem("pin_unlocked");
     if (stored === "true") setUnlocked(true);
     setChecked(true);
+
+    const saved = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = saved ? saved === "dark" : prefersDark;
+    document.documentElement.classList.toggle("dark", isDark);
   }, []);
 
   const handleUnlock = () => {

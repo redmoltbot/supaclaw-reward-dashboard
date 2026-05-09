@@ -22,18 +22,31 @@ export default function CardsPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string | null>(null);
 
-  useEffect(() => {
+  const fetchCards = () => {
+    setLoading(true);
     fetch("/api/cards?templateId=965363&page=1&itemsPerPage=100")
       .then((r) => r.json())
       .then((d) => setCards(d.data ?? []))
       .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchCards();
   }, []);
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-        Cards
-      </h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Cards
+        </h1>
+        <button
+          onClick={fetchCards}
+          className="py-2 px-4 rounded-xl bg-lime-500 text-white font-bold text-base"
+        >
+          Refresh
+        </button>
+      </div>
 
       {loading ? (
         <div className="text-center py-16 text-xl text-gray-500">

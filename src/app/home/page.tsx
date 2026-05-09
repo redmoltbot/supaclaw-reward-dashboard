@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Toast, { useToast } from "@/components/Toast";
 import ActivityLogComp from "@/components/ActivityLog";
+import ThemeToggle from "@/components/ThemeToggle";
 import { addLogEntry } from "@/lib/activityLog";
 
 export default function HomePage() {
@@ -66,9 +67,12 @@ export default function HomePage() {
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
       )}
 
-      <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">
-        SupaClaw Cafe
-      </h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          SupaClaw Cafe
+        </h1>
+        <ThemeToggle />
+      </div>
 
       {/* Stamp Form */}
       <div className="space-y-4 mb-6">
