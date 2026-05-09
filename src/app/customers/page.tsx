@@ -17,6 +17,7 @@ export default function CustomersPage() {
   const [page, setPage] = useState(1);
 
   const fetchCustomers = async () => {
+    setPage(1);
     setLoading(true);
     try {
       const res = await fetch("/api/customers?page=1&itemsPerPage=100");
