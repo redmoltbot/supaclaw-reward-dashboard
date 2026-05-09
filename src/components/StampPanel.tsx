@@ -47,18 +47,15 @@ export default function StampPanel({ cardId, onSuccess }: StampPanelProps) {
       {toast && (
         <Toast message={toast.message} type={toast.type} onClose={hideToast} />
       )}
-      <div className="flex gap-3 items-center">
-        <input
-          type="number"
-          min={1}
-          value={stamps}
-          onChange={(e) =>
-            setStamps(Math.max(1, parseInt(e.target.value) || 1))
-          }
-          className="flex-1 text-xl p-3 rounded-xl border-2 border-gray-300 focus:border-lime-500 focus:outline-none dark:bg-gray-800 dark:text-white dark:border-gray-600"
-        />
-        <span className="text-gray-500 text-lg">stamp{stamps !== 1 ? "s" : ""}</span>
-      </div>
+      <input
+        type="number"
+        min={1}
+        value={stamps}
+        onChange={(e) =>
+          setStamps(Math.max(1, parseInt(e.target.value) || 1))
+        }
+        className="w-full text-xl p-3 rounded-xl border-2 border-gray-300 focus:border-lime-500 focus:outline-none dark:bg-gray-800 dark:text-white dark:border-gray-600"
+      />
       <input
         type="text"
         placeholder="Comment (optional)"

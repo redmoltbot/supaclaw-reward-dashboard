@@ -29,6 +29,7 @@ export default function CustomerModal({
     email: "",
   });
   const [saving, setSaving] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<null | "card" | "customer">(null);
   const { toast, showToast, hideToast } = useToast();
 
   const fetchCard = async () => {
@@ -57,7 +58,6 @@ export default function CustomerModal({
   }, [serialNumber]);
 
   const handleSubtractReward = async () => {
-    if (!confirm("Subtract 1 reward from this card?")) return;
     try {
       const res = await fetch(`/api/cards/${serialNumber}/subtract-reward`, {
         method: "POST",
@@ -104,7 +104,6 @@ export default function CustomerModal({
   };
 
   const handleDeleteCard = async () => {
-    if (!confirm("Permanently delete this card? This cannot be undone.")) return;
     try {
       const res = await fetch(`/api/cards/${serialNumber}`, {
         method: "DELETE",
@@ -118,12 +117,6 @@ export default function CustomerModal({
 
   const handleDeleteCustomer = async () => {
     if (!card) return;
-    if (
-      !confirm(
-        "Permanently delete this customer and all their data? This cannot be undone."
-      )
-    )
-      return;
     try {
       const res = await fetch(`/api/customers/${card.customer.id}`, {
         method: "DELETE",
@@ -295,26 +288,53 @@ export default function CustomerModal({
             </button>
 
             {/* Management Actions */}
-            <div className="grid grid-cols-3 gap-2 pt-2">
-              <button
-                onClick={() => setEditing(true)}
-                className="py-3 rounded-xl border-2 border-lime-500 text-lime-600 font-bold text-base active:scale-95 transition-transform"
-              >
-                Edit
-              </button>
-              <button
-                onClick={handleDeleteCard}
-                className="py-3 rounded-xl border-2 border-red-400 text-red-500 font-bold text-base active:scale-95 transition-transform"
-              >
-                Del Card
-              </button>
-              <button
-                onClick={handleDeleteCustomer}
-                className="py-3 rounded-xl bg-red-500 text-white font-bold text-base active:scale-95 transition-transform"
-              >
-                Del Customer
-              </button>
-            </div>
+            {confirmDelete ? (
+              <div className="bg-red-50 dark:bg-red-900/30 rounded-2xl p-4 space-y-3">
+                <p className="text-base font-semibold text-red-700 dark:text-red-400 text-center">
+                  {confirmDelete === "card"
+                    ? "Permanently delete this card?"
+                    : "Permanently delete this customer and all their data?"}
+                </p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      if (confirmDelete === "card") handleDeleteCard();
+                      else handleDeleteCustomer();
+                    }}
+                    className="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold text-base active:scale-95 transition-transform"
+                  >
+                    Yes, delete
+                  </button>
+                  <button
+                    onClick={() => setConfirmDelete(null)}
+                    className="flex-1 py-3 rounded-xl bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white font-bold text-base active:scale-95 transition-transform"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-3 gap-2 pt-2">
+                <button
+                  onClick={() => setEditing(true)}
+                  className="py-3 rounded-xl border-2 border-lime-500 text-lime-600 font-bold text-base active:scale-95 transition-transform"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={() => setConfirmDelete("card")}
+                  className="py-3 rounded-xl border-2 border-red-400 text-red-500 font-bold text-base active:scale-95 transition-transform"
+                >
+                  Del Card
+                </button>
+                <button
+                  onClick={() => setConfirmDelete("customer")}
+                  className="py-3 rounded-xl bg-red-500 text-white font-bold text-base active:scale-95 transition-transform"
+                >
+                  Del Customer
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>
