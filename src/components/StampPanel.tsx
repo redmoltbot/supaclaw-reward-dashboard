@@ -9,7 +9,7 @@ interface StampPanelProps {
 }
 
 export default function StampPanel({ cardId, onSuccess }: StampPanelProps) {
-  const [stamps, setStamps] = useState(1);
+  const [stampsStr, setStampsStr] = useState("1");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
   const { toast, showToast, hideToast } = useToast();
@@ -22,12 +22,13 @@ export default function StampPanel({ cardId, onSuccess }: StampPanelProps) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           id: cardId,
-          stamps,
+          stamps: Math.max(1, parseInt(stampsStr) || 1),
           comment,
           purchaseSum: 0.1,
         }),
       });
       if (!res.ok) throw new Error();
+      const stamps = Math.max(1, parseInt(stampsStr) || 1);
       addLogEntry({ cardNumber: cardId, action, count: stamps, comment });
       showToast(
         `${action === "add-stamp" ? "Added" : "Subtracted"} ${stamps} stamp${stamps !== 1 ? "s" : ""}`,
@@ -50,10 +51,12 @@ export default function StampPanel({ cardId, onSuccess }: StampPanelProps) {
       <input
         type="number"
         min={1}
-        value={stamps}
-        onChange={(e) =>
-          setStamps(Math.max(1, parseInt(e.target.value) || 1))
-        }
+        value={stampsStr}
+        onChange={(e) => setStampsStr(e.target.value)}
+        onBlur={() => {
+          const n = parseInt(stampsStr);
+          if (!stampsStr || n < 1 || isNaN(n)) setStampsStr("1");
+        }}
         className="w-full text-xl p-3 rounded-xl border-2 border-gray-300 focus:border-lime-500 focus:outline-none dark:bg-gray-800 dark:text-white dark:border-gray-600"
       />
       <input
