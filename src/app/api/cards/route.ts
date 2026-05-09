@@ -1,0 +1,16 @@
+import { dwFetch } from "@/lib/apiClient";
+import { NextRequest, NextResponse } from "next/server";
+
+export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  if (!searchParams.has("templateId")) {
+    searchParams.set("templateId", "965363");
+  }
+  try {
+    const res = await dwFetch(`/cards?${searchParams.toString()}`);
+    const data = await res.json();
+    return NextResponse.json(data, { status: res.status });
+  } catch {
+    return NextResponse.json({ error: "Request failed" }, { status: 500 });
+  }
+}

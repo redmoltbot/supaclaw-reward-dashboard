@@ -1,7 +1,16 @@
 "use client";
 import { useEffect, useState } from "react";
-import type { Customer } from "@/types";
 import CustomerModal from "@/components/CustomerModal";
+
+type CardRow = {
+  id: string;
+  createdAt: string;
+  customer: {
+    firstName: string;
+    surname: string | null;
+    phone: string | null;
+  };
+};
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr);
@@ -9,14 +18,14 @@ function formatDate(dateStr: string): string {
 }
 
 export default function CardsPage() {
-  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [cards, setCards] = useState<CardRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/customers?page=1&itemsPerPage=100")
+    fetch("/api/cards?templateId=965363&page=1&itemsPerPage=100")
       .then((r) => r.json())
-      .then((d) => setCustomers(d.data ?? []))
+      .then((d) => setCards(d.data ?? []))
       .finally(() => setLoading(false));
   }, []);
 
@@ -32,28 +41,33 @@ export default function CardsPage() {
         </div>
       ) : (
         <div className="space-y-3">
-          {customers.map((c) => (
-            <div
+          {cards.map((c) => (
+            <button
               key={c.id}
-              className="p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 flex justify-between items-center"
+              onClick={() => setSelected(c.id)}
+              className="w-full text-left p-4 rounded-2xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 active:scale-95 transition-transform"
             >
-              <div>
-                <div className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {c.firstName} {c.surname || ""}
+              <div className="flex justify-between items-start">
+                <div>
+                  <div className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {c.customer.firstName} {c.customer.surname || ""}
+                  </div>
+                  <div className="text-base text-gray-500 mt-0.5">
+                    {c.customer.phone || "No phone"}
+                  </div>
                 </div>
-                <div className="text-sm text-gray-500">
-                  {formatDate(c.createdAt)}
+                <div className="text-right">
+                  <div className="font-mono text-lime-600 text-base font-medium">
+                    {c.id}
+                  </div>
+                  <div className="text-sm text-gray-400 mt-0.5">
+                    {formatDate(c.createdAt)}
+                  </div>
                 </div>
               </div>
-              <button
-                onClick={() => setSelected(c.serialNumber)}
-                className="font-mono text-lime-600 underline text-base"
-              >
-                {c.serialNumber}
-              </button>
-            </div>
+            </button>
           ))}
-          {customers.length === 0 && (
+          {cards.length === 0 && (
             <div className="text-center py-12 text-gray-500 text-lg">
               No cards found.
             </div>
