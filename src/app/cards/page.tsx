@@ -6,6 +6,8 @@ type CardRow = {
   id: string;
   createdAt: string;
   lastStampEarnedAt: string | null;
+  status: string | null;
+  device: string | null;
   balance: {
     numberStampsTotal: number;
     stampsBeforeReward: number;
@@ -39,7 +41,7 @@ function formatStampDate(dateStr: string | null): string {
 
 function exportCSV(cards: CardRow[]) {
   const today = new Date().toISOString().slice(0, 10);
-  const headers = ["Card ID", "Customer ID", "Customer Name", "Phone", "Email", "Last Stamp Earned At", "Total Stamps", "Stamps Before Reward"];
+  const headers = ["Card ID", "Customer ID", "Customer Name", "Phone", "Email", "Last Stamp Earned At", "Total Stamps", "Stamps Before Reward", "Status", "Device"];
   const rows = cards.map((c) => [
     c.id,
     c.customerId ?? "",
@@ -49,6 +51,8 @@ function exportCSV(cards: CardRow[]) {
     c.lastStampEarnedAt ?? "",
     String(c.balance?.numberStampsTotal ?? 0),
     String(c.balance?.stampsBeforeReward ?? 0),
+    c.status ?? "",
+    c.device ?? "",
   ]);
   const csv = [headers, ...rows]
     .map((row) => row.map((v) => `"${v.replace(/"/g, '""')}"`).join(","))
@@ -72,6 +76,7 @@ export default function CardsPage() {
   const [toDate, setToDate] = useState("");
   const [minStamps, setMinStamps] = useState("");
   const [maxBeforeReward, setMaxBeforeReward] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"" | "installed" | "uninstalled">("");
 
   const fetchCards = () => {
     setLoading(true);
@@ -111,16 +116,20 @@ export default function CardsPage() {
         if (before > max) return false;
       }
     }
+    if (statusFilter !== "") {
+      if (c.status !== statusFilter) return false;
+    }
     return true;
   });
 
-  const hasFilters = fromDate || toDate || (minStamps !== "" && minStamps !== "0") || maxBeforeReward !== "";
+  const hasFilters = fromDate || toDate || (minStamps !== "" && minStamps !== "0") || maxBeforeReward !== "" || statusFilter !== "";
 
   const clearFilters = () => {
     setFromDate("");
     setToDate("");
     setMinStamps("");
     setMaxBeforeReward("");
+    setStatusFilter("");
   };
 
   return (
@@ -196,6 +205,20 @@ export default function CardsPage() {
               className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm"
             />
           </div>
+          <div className="flex-1">
+            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
+              Card Status
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as "" | "installed" | "uninstalled")}
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm"
+            >
+              <option value="">All</option>
+              <option value="installed">Installed</option>
+              <option value="uninstalled">Uninstalled</option>
+            </select>
+          </div>
         </div>
         <div className="flex items-center justify-between">
           <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -261,6 +284,25 @@ export default function CardsPage() {
                     {c.balance?.stampsBeforeReward ?? 0}
                   </span>
                 </div>
+                {c.device && (
+                  <div>
+                    <span className="text-gray-400">Device: </span>
+                    <span className="text-gray-700 dark:text-gray-300">{c.device}</span>
+                  </div>
+                )}
+                {c.status && (
+                  <div>
+                    <span
+                      className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${
+                        c.status === "installed"
+                          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+                          : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+                      }`}
+                    >
+                      {c.status}
+                    </span>
+                  </div>
+                )}
               </div>
             </button>
           ))}
