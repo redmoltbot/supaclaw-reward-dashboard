@@ -156,23 +156,12 @@ export default function CardsPage() {
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-              Created From
+              Last Updated
             </label>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm"
-            />
-          </div>
-          <div className="flex-1">
-            <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-              Created To
-            </label>
-            <input
-              type="date"
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm"
             />
           </div>
@@ -263,12 +252,6 @@ export default function CardsPage() {
                 </div>
               </div>
               <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                <div>
-                  <span className="text-gray-400">Last updated: </span>
-                  <span className="text-gray-700 dark:text-gray-300">
-                    {formatStampDate(c.updatedAt)}
-                  </span>
-                </div>
                 <div>
                   <span className="text-gray-400">Total stamps: </span>
                   <span className="text-gray-700 dark:text-gray-300 font-medium">
