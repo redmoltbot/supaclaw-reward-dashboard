@@ -92,15 +92,12 @@ export default function CardsPage() {
 
   const filtered = cards.filter((c) => {
     if (fromDate) {
-      if (!c.lastStampEarnedAt) return false;
-      if (new Date(c.lastStampEarnedAt) < new Date(fromDate)) return false;
+      if (new Date(c.createdAt) < new Date(fromDate)) return false;
     }
     if (toDate) {
-      if (!c.lastStampEarnedAt) return false;
-      // include the full toDate day
       const end = new Date(toDate);
       end.setHours(23, 59, 59, 999);
-      if (new Date(c.lastStampEarnedAt) > end) return false;
+      if (new Date(c.createdAt) > end) return false;
     }
     if (minStamps !== "") {
       const min = parseInt(minStamps, 10);
@@ -159,7 +156,7 @@ export default function CardsPage() {
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-              Last Stamp From
+              Created From
             </label>
             <input
               type="date"
@@ -170,7 +167,7 @@ export default function CardsPage() {
           </div>
           <div className="flex-1">
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-              Last Stamp To
+              Created To
             </label>
             <input
               type="date"
