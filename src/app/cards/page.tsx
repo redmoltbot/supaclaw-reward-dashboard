@@ -139,7 +139,7 @@ export default function CardsPage() {
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">
-              Last Updated
+              Not active since
             </label>
             <input
               type="date"
@@ -230,7 +230,7 @@ export default function CardsPage() {
                     {c.id}
                   </div>
                   <div className="text-sm text-gray-400 mt-0.5">
-                    {formatDate(c.createdAt)}
+                    Last active: {formatDate(c.updatedAt)}
                   </div>
                 </div>
               </div>
