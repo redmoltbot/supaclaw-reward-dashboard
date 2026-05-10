@@ -76,7 +76,7 @@ export default function CardsPage() {
   const [toDate, setToDate] = useState("");
   const [minStamps, setMinStamps] = useState("");
   const [maxBeforeReward, setMaxBeforeReward] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"" | "installed" | "uninstalled">("");
+  const [statusFilter, setStatusFilter] = useState<"" | "installed" | "not_installed">("");
 
   const fetchCards = () => {
     setLoading(true);
@@ -211,12 +211,12 @@ export default function CardsPage() {
             </label>
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as "" | "installed" | "uninstalled")}
+              onChange={(e) => setStatusFilter(e.target.value as "" | "installed" | "not_installed")}
               className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 text-sm"
             >
               <option value="">All</option>
               <option value="installed">Installed</option>
-              <option value="uninstalled">Uninstalled</option>
+              <option value="not_installed">Not Installed</option>
             </select>
           </div>
         </div>
@@ -299,7 +299,7 @@ export default function CardsPage() {
                           : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
                       }`}
                     >
-                      {c.status}
+                      {c.status === "not_installed" ? "Not Installed" : c.status}
                     </span>
                   </div>
                 )}
