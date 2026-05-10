@@ -5,7 +5,7 @@ import CustomerModal from "@/components/CustomerModal";
 type CardRow = {
   id: string;
   createdAt: string;
-  lastStampEarnedAt: string | null;
+  updatedAt: string;
   status: string | null;
   device: string | null;
   balance: {
@@ -48,7 +48,7 @@ function exportCSV(cards: CardRow[]) {
     `${c.customer.firstName} ${c.customer.surname ?? ""}`.trim(),
     c.customer.phone ?? "",
     c.customer.email ?? "",
-    c.lastStampEarnedAt ?? "",
+    c.updatedAt ?? "",
     String(c.balance?.numberStampsTotal ?? 0),
     String(c.balance?.stampsBeforeReward ?? 0),
     c.status ?? "",
@@ -264,9 +264,9 @@ export default function CardsPage() {
               </div>
               <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex flex-wrap gap-x-4 gap-y-1 text-sm">
                 <div>
-                  <span className="text-gray-400">Last stamp: </span>
+                  <span className="text-gray-400">Last updated: </span>
                   <span className="text-gray-700 dark:text-gray-300">
-                    {formatStampDate(c.lastStampEarnedAt)}
+                    {formatStampDate(c.updatedAt)}
                   </span>
                 </div>
                 <div>
